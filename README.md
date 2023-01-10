@@ -1,2 +1,2 @@
 # SLGDS
-This repository
+There are two folder.s
