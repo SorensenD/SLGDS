@@ -1,2 +1,2 @@
 # SLGDS
-There are two folder.s
+There are two folders.
