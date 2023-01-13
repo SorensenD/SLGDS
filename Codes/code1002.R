@@ -113,7 +113,7 @@ quantile(result[500:rep,3],c(0.025,0.975))
 quantile(result[500:rep,4],c(0.025,0.975))
 ##############################################################################
 # CODE1002 (cont)
-# FIT MODEL BY ML
+# FIT MODEL BY ML USING GLM
 set.seed(771)
 nrepl <- 1000
 resLik <- matrix(data=NA,nrow=nrepl,ncol=3)
@@ -131,7 +131,7 @@ for (i in 1:nrepl){
   yhatBR <- ifelse(predV > 0.5, 1, 0)
   mseBR <- mean((yhatBR-d$Y[-train])^2) # MSE_1
   ### OR SAMPLE Y FROM ITS PREDICTIVE DISTRIBUTION CONDITIONAL ON 
-  ### ML ESTIMATES - THIS MAKES IT COMPARABLE TO THE McMC APPROACH
+  ### ML ESTIMATES - THIS MAKES IT COMPARABLE WITH THE McMC APPROACH
   yhatPpd <- rbinom(length(Y[-train]),1,predV)
   msePpd <- mean((yhatPpd-d$Y[-train])^2) # MSE_2
   resLik[i,] <- c(i,mseBR,msePpd)
