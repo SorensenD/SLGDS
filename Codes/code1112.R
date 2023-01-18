@@ -5,16 +5,31 @@ library(sda)
 library(tree)
 library(glmnet)
 library(randomForest)
-# SAheart <- read.table(
+# READ HEART DISEASE DATA FROM:
+####################################################################
+# 1. 
+#  SAheart <- read.table(
 #  "http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SAheart.data",  
 #  sep=",",head=T,row.names=1)
- 
- # CHANGE FAMILY HISTORY TO FACTOR
- #SAheart$famhist <- as.factor(SAheart$famhist)
+##########  OR FROM  ###############################################
+#  READ HEART DISEASE DATA FROM ESL
+# 2. 
+# SAheart <- 
+#  read.table("https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data",
+#             sep=",",head=T)
+
+#SAheart <- SAheart[,-1]
+###  
+###################################################################
+ # IF DATA DOWNLOADED FROM 1 OR 2 
+#  MUST CHANGE FAMILY HISTORY AND CHD TO FACTOR
+# SAheart$famhist <- as.factor(SAheart$famhist)
  # CHANGE RESPONSE VARIABLE FROM INTEGER TO FACTOR
- #SAheart$chd <- as.factor(ifelse(SAheart$chd == 1,"D","H"))
-  #########################################################
+# SAheart$chd <- as.factor(ifelse(SAheart$chd == 1,"D","H"))
+#######   OR FROM  ##################################
 # HEART DATA CAN ALSO BE ACCESSED USING PACKAGE loon.data
+# NO NEED TO CHANGE FAM HISTORY OR CHD TO FACTOR
+# 3. 
 library(loon.data) # MUST INSTALL PACKAGE loon.data
 data("SAheart")
 SAheart$chd <- factor(as.numeric(SAheart$chd),levels=c(2,1),labels=c("D","H"))

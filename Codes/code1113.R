@@ -5,28 +5,27 @@ library(sda)
 library(tree)
 library(glmnet)
 library(randomForest)
-# sahd <- read.table(
+# SAheart <- read.table(
 #  "http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SAheart.data",
 #   sep=",",head=T,row.names=1)
+# CHANGE FAMILY HISTORY TO FACTOR
+# SAheart$famhist <- as.factor(SAheart$famhist)
+# CHANGE RESPONSE VARIABLE FROM INTEGER TO FACTOR
+# SAheart$chd <- as.factor(ifelse(SAheart$chd == 1,"D","H"))
+
 #########################################################
 # HEART DATA CAN ALSO BE ACCESSED USING PACKAGE loon.data
 library(loon.data) # MUST INSTALL PACKAGE loon.data
 data("SAheart")
-length(which(SAheart$chd=="No")) # NO HEART DISEASE
-length(which(SAheart$chd=="Yes")) # HEART DISEASE
+SAheart$chd <- factor(as.numeric(SAheart$chd),levels=c(2,1),labels=c("D","H"))
+
+length(which(SAheart$chd=="H")) # NO HEART DISEASE
+length(which(SAheart$chd=="D")) # HEART DISEASE
 ########################################################
 # FUNCTION ACCURACY:
 accuracy = function(actual, predicted) {
   mean(actual == predicted)
 }
-# READ THE HEART DATA FROM DISK
-#sahd <- read.table(
-#  "C:/Users/au223137/Dropbox/Rsessions/HeartDiseaseData/SAheartData",
-#  header=TRUE)
-#head(sahd)
-#str(sahd)
-#head(sahd)
-#str(sahd)
 sumd <- data.frame()
 nrep <- 1
 reslt <- rep(NA,nrep)
