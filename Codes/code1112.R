@@ -81,7 +81,7 @@ tree_prune
 # OF THE FIRST SPLIT OF THE PRUNED TREE
 trtrlt <- treetrain[which(treetrain$age < 51.5),]
 dim(trtrlt)
-trtrltH <- trtrlt[which(trtrlt$chd == "No"),]
+trtrltH <- trtrlt[which(trtrlt$chd == "H"),]
 dim(trtrltH)[1]/dim(trtrlt)[1]
 summary(tree_prune)
 
