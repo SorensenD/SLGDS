@@ -41,12 +41,9 @@ for ( m in mtry) {
 }
 proc.time()-ptm
 names(sumd) <- c("mtry","min","mean","median","max","var")
-#setwd("C:/Users/au223137/Dropbox/Rsessions/ProstateCdata")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/ProstateCdata/
-#    out1rforest.pdf")
+
 with(sumd,plot(mtry,mean,type="l",col="red",ylim=c(min(min),1),
                ylab="1 - Mean Squared Error",
                xlab="Number of Predictors Considered at each Split"))
 with(sumd,lines(mtry,min,lty=2,col="blue"))
 with(sumd,lines(mtry,max,lty=2,col="blue"))
-#dev.off()

@@ -48,9 +48,7 @@ estx <- sapply(k,mhx,w,one,X)
 fitx <- sapply(k,mpred,estx,x)
 fitx[which.min(abs(x-5.12))] ## APROX PREDICTION FOR A NEW X=5.12
 fitx[which.min(abs(x-5.0))] ## FIT FOR X=5.0
-#setwd("C:/Users/au223137/Dropbox/Rsessions/MarkDown")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/MarkDown/Figures/
-#    localpoly.pdf")
+
 
 plot(x,y,main='Local linear regression')
 lines(x,fitx,lty=1,col="blue")

@@ -16,8 +16,6 @@ d <- as.matrix(dist(x))^2
 Kh25 <- exp(-(1/(2*h^2))*d)
 sc25 <- apply(Kh25,1,sum)
 mhgaus25 <- Kh25%*%y/sc25
-#setwd("C:/Users/au223137/Dropbox/Rsessions/MarkDown")
-#
 plot(y~x,main='Gaussian kernel regression')
 lines(x,mhgaus25,col="red")
 # CHOOSE h
@@ -28,4 +26,3 @@ mhgaus10 <- Kh10%*%y/sc10
 lines(x,mhgaus10,col="blue")
 legend(5, 103, legend=c("h=0.25", "h=0.10"),
        col=c("red", "blue"),lty=1:1, lwd=c(1.5,1.5), cex=0.8)
-#dev.off()

@@ -120,8 +120,7 @@ for(i in 1:ncol(Xc)){
   #fm=glm(y~Xc[,i])
   GWAS[i,]= summary(fm)$coef[2,]
 }
-#setwd("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR/GWAS2000-1500Bonf.pdf")
+
 plot(-log10(GWAS[,4]),type='o',ylab='-log10-pValue',xlab='Marker ID',cex=0.5,col=4,cex.lab=1.3)
 abline(h=-log10(0.05/nmark),lty=2,col=2,lwd=2)
 #dev.off()
@@ -234,11 +233,8 @@ proc.time()-ptm
 postprob <- postprob/rep
 postprobff <- postprobff/rep
 
-#postprobability<-postprob/rep
-#setwd("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR/PostProb2000-1500.pdf")
+
 plot(postprob,type='o',ylab='PostProb',xlab='Marker ID',cex=.5,col=4,cex.lab=1.3)
-#axis(1,seq(0,nmark,200))
 
 abline(h=0.8,lty=2,col=2,lwd=2)
 ####################################################################################
@@ -255,9 +251,7 @@ fdrhist <- function(resultprobtheta,truefd,prob){
   # MEAN AND POSTERIOR INTERVAL FOR BAYES FDR:  
   avfdis <- mean(fdisc)
   quantilefdis <- quantile(fdisc,c(0.025,0.975))
-  #setwd("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR")
-  #pdf("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR/histfdrdisc08.pdf")
-  #pdf("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR/histfdrdisc056.pdf")
+
  # HISTOGRAM OF McMC ESTIMATE OF POSTERIOR DISTRIBUTION OF BAYES FDR:  
   hist(fdisc,breaks=40,xlab='McMC-Bayes FDR',main=NULL, freq=FALSE,cex.lab=1.3)
   ### TRUE FDR: 

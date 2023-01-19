@@ -74,13 +74,7 @@ mse_3 <- mserrors[2]
 ci_2 <- quantile(resMSE[,3],c(0.025,0.975))
 ci_3 <- quantile(resMSE[,2],c(0.025,0.975))
 #ci_2
-#setwd("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/SummerCourse16/
-#    OutputR/mse3.pdf")
+
 hist(resMSE[,2],main=NA,xlab=NA)
-#dev.off()
-#setwd("C:/Users/au223137/Dropbox/Rsessions/SummerCourse/OutputR")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/
-#     SummerCourse16/OutputR/mse2.pdf")
+
 hist(resMSE[,3],main=NA,xlab=NA)
-#dev.off()

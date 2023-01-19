@@ -47,15 +47,7 @@ for (k in 1:length(h)) {
   omd <- 1 - diag(HatMat)
   LOOCV[k] <- mean(((predy - y) / omd) ^ 2) # LOOCV
 }
-#setwd("C:/Users/au223137/Dropbox/Rsessions/MarkDown")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/MarkDown/Figures/
-#    msecv.pdf")
-#plot(h,GCV,type="l",col="red",ylim=c(min(GCV),
-#    max(LOOCV)),ylab="GCV / LOOCV")
-#lines(h,LOOCV,type="l",col="blue")
-#legend(1.2, 0.7, legend=c("GCV", "LOOCV"),
-#      col=c("red", "blue"),lty=1:1, lwd=c(1.5,1.5), cex=0.8)
-#dev.off()
+
 h[which.min(LOOCV)]
 h[which.min(GCV)]
 min(LOOCV)

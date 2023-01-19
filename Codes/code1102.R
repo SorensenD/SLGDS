@@ -10,9 +10,7 @@ h <- 0.2
 d2 <- ifelse(d <= h,1,0)
 div <- apply(d2,1,sum)
 rx <- d2%*%y/div
-#setwd("C:/Users/au223137/Dropbox/Rsessions/MarkDown")
-#pdf("C:/Users/au223137/Dropbox/Rsessions/MarkDown/Figures/
-#      uniformgrid.pdf")
+
 
 plot(y~x,main='Uniform kernel using a grid of values of x')
 lines(x,rx,col="blue")
@@ -23,4 +21,3 @@ rx <- d2%*%y/div
 lines(x,rx,col="red")
 legend(5, 103, legend=c("h=0.2", "h=0.8"),
        col=c("blue","red"),lty=1:1, lwd=c(1.5,1.5), cex=0.8)
-#dev.off()
