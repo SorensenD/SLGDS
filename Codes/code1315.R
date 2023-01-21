@@ -42,7 +42,8 @@ breed <- as.factor(breed)
 X<-model.matrix(~0+breed)
 Z<-model.matrix(~0+family)
 W <- cbind(X,Z)
-LHS <- crossprod(W) # LHS OF MME
+LHS <- crossprod(W) # LHS OF LSE
+# LHS OF MME:
 LHS[-(1:2),-(1:2)] <- LHS[-(1:2),-(1:2)]+diag(k,nrow=nrow(LHS)-2)
 RHS <- crossprod(W,y) # RHS OF MME
 SOL <- solve(LHS,RHS) # SOLUTION
