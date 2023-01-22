@@ -18,7 +18,7 @@ library(randomForest)
 #  read.table("https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data",
 #             sep=",",head=T)
 
-#SAheart <- SAheart[,-1]
+#SAheart <- SAheart[,-1] # IF READ FROM HERE, DROP FIRST COLUMN
 ###  
 ###################################################################
  # IF DATA DOWNLOADED FROM 1 OR 2 
