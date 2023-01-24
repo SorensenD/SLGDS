@@ -103,9 +103,9 @@ ptm <- proc.time()
 for (i in 1:rep){
   #  print(i)
   theta <- solt + t(ch)%*%rnorm(length(theta),0,1)
-  # DRAWS FROM THE VLAIDATING DATA:  
+  # DRAWS FROM THE VALIDATING DATA:  
   ystarval <- rnorm(length(yv),Zv%*%theta,sqrt(ves))
-  # DRAWS FROM THE TRAINIMG DATA:  
+  # DRAWS FROM THE TRAINING DATA:  
   ystartrain <- rnorm(length(yt),Zt%*%theta,sqrt(ves))
   
   mse2val <- mean((ystarval-yv)^2) # VALIDATION MSE
