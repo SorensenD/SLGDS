@@ -17,11 +17,17 @@ nrec <- 30
 cov <- rnorm(nrec,2,3) # GENERATE THE COVARIATE
 xb <- cov*beta
 p1 <- pnorm(mu+xb) # PROBABILITIES ACCORDING TO PROBIT MODEL
-dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0)) # CREATE DATA
-colnames(dat1) <- c("Y", "X")
-d <- data.frame(dat1)
-attach(d)
-mean(Y)
+d <- data.frame(Y=rbinom(nrec,1,p1),X=round(cov,digits=0))
+
+#dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0)) # CREATE DATA
+#d <- data.frame(rbinom(nrec,1,p1),round(cov,digits=0)) # CREATE DATA
+
+#colnames(dat1) <- c("Y", "X")
+#colnames(d) <- c("Y", "X")
+
+#d <- data.frame(dat1)
+#attach(d)
+mean(d$Y)
 # CHOOSE TUNING PARAMETER LAMBDA AND COVARIANCE MATRIX C
 lambda<-1
 c<-matrix(c(1,0.0,0.0,0.1),nrow=2,ncol=2,byrow=T)
@@ -35,7 +41,7 @@ logpost <- function(data,par)
   theta[1] <-par[1]
   theta[2] <- par[2]
   with(data=d,sum(Y*( theta[1] + theta[2]*X)-log(1+exp(theta[1] + 
-                                                         theta[2]*X))))
+                                                theta[2]*X))))
 }
 #START MH LOOP
 ptm <- proc.time()
@@ -144,3 +150,4 @@ efchsize<-svar/mcvar
 efchsize
 integrautoc<-varch/svar
 integrautoc
+
