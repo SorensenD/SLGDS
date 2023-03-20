@@ -3,7 +3,7 @@
 # LIABILITIES SAMPLED IN ONE GO AFTER JA  pg 241
 rm(list=ls()) # Clear the workspace
 set.seed(123)
-require(graphics)
+#require(graphics)
 # THE CODE WILL USE THE PACKAGE MVTNORM; IT IS INSTALLED BELOW
 #install.packages("mvtnorm", .libPaths()[1])
 library(mvtnorm)
@@ -20,12 +20,16 @@ xb <- cov*beta
 p1 <- pnorm(mu+xb) # COMPUTE PROBABILITIES FOR PROBIT MODEL
 #p1 <- rbeta(30,2,2)
 # CREATE DATA:
-dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0))
-colnames(dat1) <- c("Y", "X")
-d <- data.frame(dat1)
+#dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0))
+d <- data.frame(Y=rbinom(nrec,1,p1),X=round(cov,digits=0))
+
+#colnames(dat1) <- c("Y", "X")
+#d <- data.frame(dat1)
 #head(d)
-attach(d)
-mean(Y)
+#attach(d)
+#mean(Y)
+mean(d$Y)
+
 ##################################################################
 One<-rep(1,nrec)
 X<-matrix(c(One,d[,2]),nrow=nrec,ncol=2)
