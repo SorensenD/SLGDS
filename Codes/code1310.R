@@ -2,7 +2,7 @@
 #BINARY DATA - METROPOLIS-HASTING JOINT UPDATING - PROBIT MODEL
 rm(list=ls()) # Clear the workspace
 set.seed(123)
-require(graphics)
+#require(graphics)
 # CODE USES PACKAGE MVTNORM; IT IS INSTALLED BELOW
 #install.packages("mvtnorm", .libPaths()[1])
 library(mvtnorm)
@@ -17,11 +17,15 @@ nrec <- 30
 cov <- rnorm(nrec,2,3) # GENERATE THE COVARIATE
 xb <- cov*beta
 p1 <- pnorm(mu+xb) # PROBABILITIES ACCORDING TO PROBIT MODEL
-dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0)) # CREATE DATA
-colnames(dat1) <- c("Y", "X")
-d <- data.frame(dat1)
-attach(d)
-mean(Y)
+#dat1 <- cbind(rbinom(nrec,1,p1),round(cov,digits=0)) # CREATE DATA
+d <- data.frame(Y=rbinom(nrec,1,p1),X=round(cov,digits=0)) # CREATE DATA
+
+#colnames(dat1) <- c("Y", "X")
+#d <- data.frame(dat1)
+#attach(d)
+#mean(Y)
+mean(d$Y)
+
 #################################################################
 # CHOOSE TUNING PARAMETER LAMBDA AND COVARIANCE MATRIX C
 lambda<-0.25
@@ -36,8 +40,8 @@ logpost <- function(data,par)
 {
   theta[1] <-par[1]
   theta[2] <- par[2]
-  sum(Y*log(pnorm(theta[1]+theta[2]*X))+(1-Y)*log(1.000001-
-                      pnorm(theta[1]+theta[2]*X)))
+  with(data=d,sum(Y*log(pnorm(theta[1]+theta[2]*X))+(1-Y)*log(1.000001-
+                              pnorm(theta[1]+theta[2]*X))))
 }
 #START MH LOOP
 ptm <- proc.time()
