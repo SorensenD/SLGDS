@@ -46,7 +46,7 @@ ptm<-proc.time()
 
 for (i in 1:rep){
   #  print(i)
-  df <- length(yt)-nmark-2 
+  df <- length(yt)-(nmark+1)-2 
   # DRAW RESIDUAL VARIANCE
   varstar <- scale/rchisq(1,df)
   resid <- rnorm(length(solt),0,1)
