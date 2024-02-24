@@ -1,10 +1,21 @@
 # CODE1313
 # BAYES PROBLEMS II Exercise 5. GENOMIC MODEL
 # DATA BASED ON GENOMIC MODEL; OBTAIN SVD OF WW'(1/m)
+########################################################################
+#set.seed(12345)
+#nindiv<-500
+#nmark<-1000
+#vgs<-10
+#ves<-25
+#rep<-4000
+# RESULTS IN AN AVERAGE MC POSTERIOR MEAN OF Vg EQUAL TO APPROX 10
+######################################################################
 rm(list=ls()) # CLEAR WORKSPACE
 set.seed(12345)
 nindiv<-500
 nmark<-1000
+#nindiv <- 1000
+#nmark <- 10000
 nt <- nindiv*nmark
 # GENERATE MARKER MATRIX FROM BINOMIAL DISTRIBUTION
 X<-matrix(nrow= nindiv,ncol= nmark,rbinom(n=nt,size=2,p=.5))
@@ -17,6 +28,24 @@ cm <- colMeans(X)
 vgs<-10
 #CHOOSE VALUE FOR ENVIRONMENTAL VARIANCE ves
 ves<-25
+
+########################################################################
+### CODE r=1 IF VARIANCE COMPONENTS ASSIGNED INPROPER UNIFORM PRIORS
+### ELSE: VARIANCE COMPONENTS ASSIGNED SCALED INVERTED CHI SQUARE DISTRIBUTIONS
+#########################################################################
+r <- 2
+if(r!=1){
+  ## HYPERPARAMETERS OF THE SCALED INVERTED PRIORS FOR va AND ve
+  nua <- 4.1
+  nue <- 4.1
+  Sa <- 10
+  Se <- 30
+  ## THIS GENERATES PRIOR MODES FOR va AND ve equal to 10*(4.1/6.1) = 6.7
+  ## and 10*(4.1/6.1) = 20.2
+}
+########################################################################
+
+
 # CREATE MATRIX OF STANDARDISED MARKER GENOTYPE CODES
 for (i in 1:nmark)
 {
@@ -59,7 +88,7 @@ ptm<-proc.time()
 
 for (i in 1:rep)
 {
-  # print (i)
+   print (i)
   # SAMPLE mu
   avmu<-sum(y-U%*%alfa)/nindiv
   varmu<-Ve/nindiv
@@ -70,22 +99,30 @@ for (i in 1:rep)
   varalfa1<-((Dp)/(Dp+k))*Ve
   alfa1<-rnorm(nindiv-1,meanalfa1,sqrt(varalfa1))
   alfa<-c(alfa1,0)
-  # SAMPLE Vg
-  # COMPUTE SCALE
-  scVg<-sum(alfa1*alfa1*(1/Dp))
-  Vg<-scVg/rchisq(1,nindiv-3)
-  #Vg<-0.0001
-  # SAMPLE Ve
-  # COMPUTE SCALE
   ystar<-y-mu-U%*%alfa
+  
+  # SAMPLE Vg and Ve
+  if(r==1) #  IMPROPER UNIFOR PRIORS FOR Vg, Ve
+  { scVg<-sum(alfa1*alfa1*(1/Dp))
   scVe<-sum(ystar*ystar)
+  Vg<-scVg/rchisq(1,nindiv-3)
   Ve<-scVe/rchisq(1,nindiv-2)
-  #Ve<-25
+  }
+  if (r!=1) # SCALED INVERTED CHI SQUARE PRIORS FOR Vg,Ve
+  { scVg<-sum(alfa1*alfa1*(1/Dp)) + nua*Sa
+  scVe<-sum(ystar*ystar) + nue*Se
+  Vg<-scVg/rchisq(1,nindiv-1+nua)
+  Ve<-scVe/rchisq(1,nindiv + nue)
+  }
+  
+  # SAMPLE Vg and Ve
+
   k<-Ve/Vg
   result[i,]<-c(i,mu,Vg,Ve,Vg/(Vg+Ve),1/k,mean(alfa*alfa))
   #  print(result[i,])
 }
 proc.time()-ptm
+apply(result,2,mean)
 # FUNCTION LOGLIK TO CONSTRUCT THE LOGLIKELIHOOD
 # TO COMPARE THE BAYESIAN RESULTS WITH OPTIM
 #NOTE: k IN THE LOGLIKELIHOOD IS Vg/Ve
@@ -128,3 +165,4 @@ meanalfasq <- mean(result[,7])
 meanalfasq
 cialfasq <- quantile(result[,7],c(0.025,0.975))
 cialfasq
+
