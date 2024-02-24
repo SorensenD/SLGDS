@@ -1,5 +1,6 @@
 # CODE1313
 # BAYES PROBLEMS II Exercise 5. GENOMIC MODEL
+# TWO OPTIONS FOR PRIOR ASSUMPTIONS OF VARIANCE COMPONENTS (SEE LINE 34)
 # DATA BASED ON GENOMIC MODEL; OBTAIN SVD OF WW'(1/m)
 ########################################################################
 #set.seed(12345)
