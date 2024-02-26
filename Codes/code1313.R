@@ -115,8 +115,6 @@ for (i in 1:rep)
   Vg<-scVg/rchisq(1,nindiv-1+nua)
   Ve<-scVe/rchisq(1,nindiv + nue)
   }
-  
-  # SAMPLE Vg and Ve
 
   k<-Ve/Vg
   result[i,]<-c(i,mu,Vg,Ve,Vg/(Vg+Ve),1/k,mean(alfa*alfa))
