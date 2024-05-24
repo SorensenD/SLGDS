@@ -45,6 +45,7 @@ resultprobtheta<-matrix(data=NA,nrow=rep,ncol=nmark)
 resultMSE<-matrix(data=NA,nrow=rep,ncol=4)
 keepZvb <- matrix(data=NA,nrow=rep, ncol=nindiv)
 keepZtb <- matrix(data=NA,nrow=rep, ncol=nindiv)
+meff <- matrix(data=NA,nrow=nindiv,ncol=1)
 
 
 alfa<-matrix(data=0,nrow=nmark,ncol=1)
@@ -264,6 +265,7 @@ sumXb <- 0
 for(i in 1:nindiv){
  w <- 1/dnorm(y.train[i],keepZvb[,i],sqrt(result[,6])) 
  w <- w/sum(w)
+ meff[i] <- 1/sum(w*w)
  index <-sample(1:rep,rep,replace=T,prob=w)
  yhatminusi <- rnorm(rep,keepZvb[index,i],sqrt(result[index,6])) 
  sumloo <- sumloo + (y.train[i]-yhatminusi)^2
@@ -274,6 +276,7 @@ for(i in 1:nindiv){
  sumXb <- sumXb + (y.train[i]-keepZvb[index,i])^2 # (y - Xb)^2; b~[b|y_i]
  
 }
+plot(sort(meff))
 mselooBayes <- sumloo/length(y.train) # estimate based on y^hat = y^*~[y|y_t]
 
 hist(mselooBayes,breaks=20,xlab=NULL,main=NULL)
@@ -285,9 +288,9 @@ quantile(mselooXb,c(0.025,0.975))
 hist(mselooXb,breaks=20,xlab=NULL,main=NULL)
 
 
-mseloodg <- sumdg/(length(y.train)) # estimate of mseloodg (Gianola-Schön)
+mseloodg <- sumdg/(length(y.train)) # estimate of mseloodg (Gianola et al 2016)
 mseloodg
-mselooavrb <- sumavrb/length(y.train) # McMC estimate of mseloodg (Gianola-Schön)
+mselooavrb <- sumavrb/length(y.train) # McMC estimate of mseloodg (Gianola et al 2016)
 mselooavrb
 hist(mselooBayes,breaks=20,xlab=NULL,main=NULL)
 abline(v=mean(resultMSE[10:rep,3]),col='red',lwd=3)
