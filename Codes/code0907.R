@@ -134,15 +134,17 @@ for (i in 1:nmark)
 meanXc <- apply(Xc,2,mean)
 varXc<-apply(Xc,2,var)
 sumvar<-sum(varXc[IDq]) # Compute 2*Sum(p(1-p)), where the Sum is over the nqtl 
+sumvart <- sum(varXc)
 ##   QTL
 QTLeff<-sqrt(rq*va/sumvar) # calculate the QTL effect so that the total genetic 
 ##   variance is VA
 be[IDq] <- QTLeff
 Xt<-Xc[,IDq]
-Sb<- (va/sumvar)*(6.1/4.1)
+#Sb<- (va/sumvar)*(6.1/4.1)
+Sb <- (va/(sumvart*(nqtl/nmark)))*(6.1/4.1)
 # Initialise scale parameter of scaled inverse chi-square distributions for 
 ##   conditional variance V
-Sv<- 1*(6.1/4.1)
+#Sv<- 1*(6.1/4.1)
 #############################################
 ## RESIDUAL VARIANCE OF THE LIABILITY:
 resliab <- 1 + (1-rq)*va
