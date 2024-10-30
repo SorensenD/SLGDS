@@ -26,7 +26,9 @@ for (i in 1:rep){
   {
     theta <- (psi-a)/b
   }
-  else {theta <- 0}
+  else {
+    theta <- 0
+  }
   
   # DRAW SE SP FROM TRUNCATED BETA'S USING DEVROYE'S ALGORITHM
   se<-qbeta(runif(1,pbeta(0.8,a_se,b_se),pbeta(1,a_se,b_se)),
