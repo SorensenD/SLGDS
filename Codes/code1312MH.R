@@ -128,3 +128,13 @@ civf <- quantile(result[,3],c(0.025,0.975))
 civf
 ciher <- quantile(herit,c(0.025,0.975))
 ciher
+#####################################################
+## PLOT THE BETA PRIOR
+a <- 5
+b <- 20
+x<-seq(0,1,length=100)
+dens<-dbeta(x,a,b)
+plot(x,dens,type='l')
+mode <- (a-1)/(a+b-2)
+mode
+quantile(rbeta(1000000,a,b),c(0.025,0.975))
