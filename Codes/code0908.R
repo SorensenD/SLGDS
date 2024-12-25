@@ -42,7 +42,7 @@ rq <- 1
 
 nmark <- 5000
 # Choose length of McMC chain
-rep <- 400
+rep <- 4000
 # Set initial proportion of QTL
 piqtl<-nqtl/nmark
 # parameters a and b of the beta prior
