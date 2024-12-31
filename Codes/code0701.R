@@ -1,5 +1,4 @@
 # CODE0701
-# AN EXAMPLE USING SIMULATED CORRELATED X
 rm(list=ls()) # CLEAR WORKSPACE
 set.seed(3711)
 #install.packages("glmnet", .libPaths()[1])
@@ -7,8 +6,7 @@ library(glmnet)
 n <- 100
 p <- 100
 X <- matrix(rnorm(p*n),ncol=p)
-X <- X*0.8 + X[,1]*0.3 # GENERATE CORRELATED COVARIATES
-X <- scale(X)*sqrt(n)/sqrt(n-1)
+X <- scale(X)
 beta <- rep(0,p)
 betac <- rep(0,p)
 beta <- sample(0:1,p,replace=TRUE,prob=c(2,1))
