@@ -1,11 +1,19 @@
 # CODE0701
 rm(list=ls()) # CLEAR WORKSPACE
-set.seed(3711)
+set.seed(3037)
 #install.packages("glmnet", .libPaths()[1])
 library(glmnet)
 n <- 100
 p <- 100
-X <- matrix(rnorm(p*n),ncol=p)
+rho <- 0.6
+# GENERATE A MATRIX OF CORRELATED COVARIATES X
+X <- matrix(data=0,nrow=n,ncol=p)
+for (i in 1:n){
+  X[i,1] <- rnorm(1)
+  for (j in 1:(p-1)){
+    X[i,j+1] <- X[i,j]*rho + rnorm(1)
+  }
+}
 X <- scale(X)
 beta <- rep(0,p)
 betac <- rep(0,p)
