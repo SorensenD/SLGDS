@@ -10,8 +10,8 @@ rm(list=ls()) # CLEAR WORKSPACE
 #install.packages("modeest")
 library(modeest)
 
-set.seed(30337) # FOR rq=1
-#set.seed(303371) # FOR rq=0.4
+#set.seed(30337) # FOR rq=1
+set.seed(303371) # FOR rq=0.4
 
 ##############################
 # 1. INITIALISE AND CREATE DATA
@@ -22,7 +22,7 @@ pm <- 0.5
 ## QTL FREQUENCY:
 pQTL <- 0.05
 #mu <- qnorm(pm)
-## FREQUENCY OF 1's IN POPULATION
+## FREQUENCY OF 1's IN POPULATION FOR NULL MODEL
 pY <- 0.05
 mu <- qnorm(pY)
 
@@ -37,9 +37,9 @@ nindiv <- 2500 #2.500 in training and 2500 in validating
 
 ########################################################
 # SPECIFY THE PROPORTION OF va EXPLAINED BY THE nqtl LOCI
-#rq <- 0.4
+rq <- 0.4
 #rq <- 0.5
-rq <- 1
+#rq <- 1
 ########################################################
 
 # Choose number of markers
@@ -47,8 +47,8 @@ nmark<-15000
 #nmark <- 1500
 # Choose length of McMC chain
 #rep <- 5000
-rep<-100 # SET NUMBER OF REPLICATES TO A SMALL NUMNER TO TEST THE CODE
-#rep <- 10000
+#rep<-100 # SET NUMBER OF REPLICATES TO A SMALL NUMNER TO TEST THE CODE
+rep <- 2000
 
 
 # Set initial proportion of QTL
@@ -184,29 +184,34 @@ for(i in 1:ncol(Xc)){
 proc.time()-ptm
 #############################################################################
 GWASdetctBon<-which(-log10(GWAS[,4]) > -log10(0.05/nmark))
-length(GWASdetctBon)  # DISCOVERY SET BONFERRONI
-### COMPUTE PREDICTIONS BASED ON GWAS/GLM
-fm2 <- glm(y.train~Xc[,GWASdetctBon],family = binomial(link = "probit"))
-coef(fm2)
-pred2b <- predict(fm2,type="response")
-summary(pred2b)
-
-ind <- which(pred2b==max(pred2b))
-ind
-### PREDICTION FOR y.val[ind] 
-Xc[ind,GWASdetctBon]
-genscore <- t(as.matrix(Xc[ind,GWASdetctBon]))%*%
-  coef(fm2)[2:(length(GWASdetctBon)+1)]
-pind<- pnorm(coef(fm2)[1]+genscore)
-pind
-pred2b[ind]
-y.val[ind]
-mean(y.val)
-pred2b[ind]/mean(y.val)
+if(length(GWASdetctBon) > 0){
+  length(GWASdetctBon)  # DISCOVERY SET BONFERRONI
+  ### COMPUTE PREDICTIONS BASED ON GWAS/GLM
+  fm2 <- glm(y.train~Xc[,GWASdetctBon],family = binomial(link = "probit"))
+  coef(fm2)
+  pred2b <- predict(fm2,type="response")
+  summary(pred2b)
+  
+  ind <- which(pred2b==max(pred2b))
+  ind
+  ### PREDICTION FOR y.val[ind] 
+  Xc[ind,GWASdetctBon]
+  genscore <- t(as.matrix(Xc[ind,GWASdetctBon]))%*%
+    coef(fm2)[2:(length(GWASdetctBon)+1)]
+  pind<- pnorm(coef(fm2)[1]+genscore)
+  pind
+  pred2b[ind]
+  y.val[ind]
+  mean(y.val)
+  pred2b[ind]/mean(y.val)
+}
 ###################################################################
 
 plot(-log10(GWAS[,4]),type='o',ylab='-log10-pValue',xlab='Marker ID',
      cex=0.5,col=4,cex.lab=1.3)
+#plot(-log10(GWAS[,4]),ylab='-log10-pValue',xlab='Marker ID',
+#     cex=1,pch='.',col=4,cex.lab=1.3)
+
 abline(h=-log10(0.05/nmark),lty=2,col=2,lwd=2)
 points(IDq,-log10(GWAS[IDq,4]),pch="*",cex=2,col="orange")
 
@@ -419,7 +424,9 @@ p00/length(which(y.val==0)) # Pr(Y*<2*null|Y=0)
 ################################################################################
 ################################################################################
 ###########   SELECTED MARKERS BASED ON POSTPROB > 0.4    ######################
-selM <- which(postprob>0.4) # LABLE FOR HIGHEST SCORING MARKERS (FOR PROB > 0.4)
+#selM <- which(postprob>0.4) # LABLE FOR HIGHEST SCORING MARKERS (FOR PROB > 0.4)
+selM <- which(postprob>0.1) # LABLE FOR HIGHEST SCORING MARKERS (FOR PROB > 0.1)
+postprob[selM]
 ## CONSTRUCT PREDICTORS BASED ON GENOTYPES OF HIGHEST SCORING MARKERS
 for (i in 1:rep){
   predsel[i,] <- pnorm(result[i,2] + Xc[,selM]%*%storeb[i,selM])
@@ -430,8 +437,10 @@ for (i in 1:rep){
   msebriersel[i] <- mean((y.val - predsel[i,])^2)
 }
 msepredselBrier <- mean(msebriersel) # BRIER SCORE SELECTED MARKERS
+
 # BRIER SCORE USING ALL MARKERS, ACOUNTING FOR VARIANCE OF THE PREDICTOR
 mseprobvalBrier <- mean(mse[,5])
+mseprobvalBrier
 ## MEAN AND VARIANCE OF POSTERIOR PREDICTIVE PREDICTIONS BASED ON Pr(Y*=1|X,Yt)
 ## USING SELECTED MARKERS:
 meanpredsel <- apply(predsel,2,mean)
@@ -441,6 +450,38 @@ summary(varpredsel)  # VAR OF Pr(Y*=1|X,Yt) USING SEL MARKERS
 summary(meanpredsel)
 tail(sort(meanpredsel))
 summary(varprobval) # VAR OF Pr(Y*=1|X,Yt) USING ALL MARKERS
+############################################################################
+IDmax <- which(meanpredsel == max(meanpredsel))
+IDmax
+X[IDmax,selM]
+Y <- apply(X[,selM],1,sum) # allele content for the 4 selected markers across individuals
+YmaxID <- which(Y==max(Y)) # individual with largest allele content among the 4 selected markers
+X[YmaxID,selM] # genotype combination among 4 selected markers with largest total allele content
+meanpredsel[YmaxID]
+summary(resultprobtheta[100:rep,selM[2]])
+hist(resultprobtheta[100:rep,selM[2]])
+meanbhat <- apply(storeb,2,mean)
+meanbhat[selM]
+meanmu <- mean(result[100:rep,2])
+## keep the probabilities corresponding to the selected markers
+probsel <- postprob[selM]
+summary(probsel)
+summary(postprob)
+prindiv <- pnorm(meanmu + Xc[,selM]%*%meanbhat[selM])
+summary(prindiv)
+which(prindiv == mean(prindiv))
+#############################################################################
+highten <- which(meanpredsel > 0.188)
+y.val[highten]
+prindiv[highten]
+mean(prindiv[highten])
+summary(prindiv[highten])
+############################################################################
+y.val1 <- y.val[y.val == 1]
+ID1 <- which(y.val==1)
+length(y.val1)
+sum(y.val1)
+mean(prindiv[ID1])
 ############################################################################
 
 ### THEORETICAL EXPECTATIONS OF THE BRIER SCORES ACCOUNTING FOR VAR OF PREDICTOR
@@ -622,19 +663,42 @@ pval<-GWAS[,4]
 bhat<-GWAS[,1] 
 compldata<-data.frame(bID,bhat,pval)
 sortcd<-compldata[order(compldata$pval),]
+#############################################
+## ALLOW FOR THE FACT THAT NONE OF THE TESTS ARE SIGNIFICANT
 for(i in nmark:1){
   adjpv[i]<-(i/nmark)*alfa
 }
 compldata<-data.frame(sortcd,adjpv)
-for (i in nmark:1){
+for (i in nmark:0){
+  if(i == 0)break
   if(compldata$pval[i] <= compldata$adjpv[i]){
-    print(i)
+    #      print(i)
     break
   }
 }
-sizediscovset<-i # SIZE OF DISCOVERY SET
-signif<-compldata[1:i,]
+sizediscovset<-i  # SIZE OF DISCOVERY SET
+#  print(i)
+if(i == 0){
+  signif <- data.frame(bID=integer(0),bhat=numeric(0),pval=numeric(0),adjpv=numeric(0))
+} else {
+  signif<-compldata[1:i,]
+} 
 nslb<-i+1
+#############################################
+#for(i in nmark:1){
+#  adjpv[i]<-(i/nmark)*alfa
+#}
+#compldata<-data.frame(sortcd,adjpv)
+#for (i in nmark:1){
+#  if(compldata$pval[i] <= compldata$adjpv[i]){
+#    print(i)
+#    break
+#  }
+#}
+#sizediscovset<-i # SIZE OF DISCOVERY SET
+#signif<-compldata[1:i,]
+#nslb<-i+1
+####################################################
 notsignif<-compldata[nslb:nmark,]
 sizediscovset
 fdiscov<-length(setdiff(signif$bID,trueH1))
@@ -643,5 +707,24 @@ fdiscov/sizediscovset # TRUE OBSERVED PROPORTION OF FD IN SAMPLE
 # EXPECTED PROPORTION ALFA (CONCEPTUALLY AVERAGED OVER SAMPLES)
 alfa
 #################################################################
-
-
+####   TESTING PLOTS   ######################
+plot(x,y,ylim=c(0,max(y)))
+d <- matrix(c(x,y),byrow=F,ncol=2)
+apply(d,1,FUN=function(t)lines(c(t[1],t[1]),c(0,t[2])))
+abline(h=0,lty=2)
+###################################
+x <- 1:nmark
+y <- -log10(GWAS[,4])
+plot(x,y,ylim=c(0,max(y)),type='n')
+d <- matrix(c(x,y),byrow=F,ncol=2)
+#apply(d,1,FUN=function(t)lines(c(t[1],t[1]),c(0,t[2]),col='blue'))
+points(x,y)
+abline(h=0,lty=2)
+abline(h=-log10(0.05/nmark),lty=2,col=2,lwd=2)
+points(IDq,-log10(GWAS[IDq,4]),pch="*",cex=2,col="orange")
+###############################################
+library(latex2exp)
+plot(-log10(GWAS[,4]),type='o',ylab=TeX('$-log_{10}\\,p-$value'),xlab='Marker ID',
+     cex=0.5,col=4,cex.lab=1.3)
+plot(-log10(GWAS[,4]),ylab=TeX('$-log_{10}\\,p-$value'),xlab='Marker ID',
+     cex=0.5,col=4,cex.lab=1.3)
